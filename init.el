@@ -38,13 +38,16 @@
 (blink-cursor-mode 0)
 
 ;; config
-;; (setq initial-scratch-message nil) ;; No scratch message
+(setq initial-scratch-message nil) ;; No scratch message
 
 ;; show matching parens
 (show-paren-mode 1)
 
 ;; always show column numbers
 (column-number-mode 1)
+
+;; better navigation in 'switch-to-buffer' and 'find-file'
+(ido-mode 1)
 
 ;; paredit
 (autoload 'paredit-mode "paredit"
@@ -56,26 +59,28 @@
 (add-hook 'lisp-interaction-mode-hook 'turn-on-paredit)
 (add-hook 'scheme-mode-hook           'turn-on-paredit)
 
-;; (eval-after-load "paredit"
-;;  #'(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
+(eval-after-load "paredit"
+  #'(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
 	
-;; AUTO-COMPLETE
+;; auto-complete
 (require 'auto-complete)
 (global-auto-complete-mode t)
 (setq ac-auto-start t)                  ;automatically start
 
-;;Cljdoc
+;; cljdoc - 'eldoc' for clojure
 (require 'cljdoc)
 
-;; Auto indent
+;; auto indent
 (defun turn-on-indent () (local-set-key (kbd "RET") 'newline-and-indent))
 (add-hook 'lisp-mode-hook 'turn-on-indent)
 (add-hook 'clojure-mode-hook 'turn-on-indent)
 
 (global-undo-tree-mode)
+
+;; improved auto-complete for emacs commands
 (icicle-mode 1)
 
-;; Eldoc
+;; eldoc
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
@@ -85,20 +90,24 @@
 (eldoc-add-command
  'paredit-backward-delete
  'paredit-close-round) 
+
 ;; Stop SLIME's REPL from grabbing DEL,
 ;; which is annoying when backspacing over a '('
-
+(defun override-slime-repl-bindings-with-paredit ()
+            (define-key slime-repl-mode-map
+                (read-kbd-macro paredit-backward-delete-key) nil))
+          (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
 ;; SLIME
-;;(defun turn-on-slime () (slime-mode t))
-;(add-hook 'lisp-mode-hook 'turn-on-slime)
-;(add-hook 'clojure-mode-hook 'turn-on-slime)
-;(add-hook 'inferior-lisp-mode-hook 'turn-on-slime)
+(defun turn-on-slime () (slime-mode t))
+(add-hook 'lisp-mode-hook 'turn-on-slime)
+(add-hook 'clojure-mode-hook 'turn-on-slime)
+(add-hook 'inferior-lisp-mode-hook 'turn-on-slime)
 
 ;; take the short answer, y/n is yes/no
 (defalias 'yes-or-no-p 'y-or-n-p)	
 
-;; Font
+;; font
 (condition-case nil
     (set-default-font "Cousine")
   (error (condition-case nil
@@ -109,6 +118,9 @@
 (setq x-select-enable-clipboard t)
 (global-font-lock-mode 1) ;; Enable syntax highlighting when editing code.
 (setq current-language-environment "UTF-8")
+
+define-key emacs-lisp-mode-map
+  (kbd "M-.") 'find-function-at-point)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
