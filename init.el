@@ -56,8 +56,8 @@
 (add-hook 'lisp-interaction-mode-hook 'turn-on-paredit)
 (add-hook 'scheme-mode-hook           'turn-on-paredit)
 
-(eval-after-load "paredit"
-  #'(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
+;; (eval-after-load "paredit"
+;;  #'(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
 	
 ;; AUTO-COMPLETE
 (require 'auto-complete)
