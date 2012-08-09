@@ -7,6 +7,9 @@
 
 (setq url-http-attempt-keepalives nil)
 
+;; uncomment line below and replace {path} with path-to-lein 
+(setq inferior-lisp-program "{path}/lein repl")
+
 (setq package-list
       '(paredit popup pos-tip
 	       rainbow-mode escreen switch-window auto-complete
