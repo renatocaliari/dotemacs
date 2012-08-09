@@ -1,6 +1,6 @@
 #dotemacs
 
-My .emacs.d/init.el with packages to use with Clojure.
+My .emacs.d/init.el with packages to use clojure, repl, auto-complete, documentation, etc.
 
 ## How to install emacs 24:
 http://batsov.com/articles/2011/10/09/getting-started-with-emacs-24/
