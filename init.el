@@ -6,16 +6,14 @@
 	       "http://marmalade-repo.org/packages/"))
 
 (setq url-http-attempt-keepalives nil)
-
-;; uncomment line below and replace {path} with path-to-lein 
-(setq inferior-lisp-program "{path}/lein repl")
+(setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
 
 (setq package-list
       '(paredit popup pos-tip
-	       rainbow-mode escreen switch-window auto-complete
+	       rainbow-mode escreen switch-window auto-complete fuzzy-match
 	       icicles magit magithub highlight-parentheses
 	       highlight-indentation smart-tab color-theme elein
-	       popup slime slime-repl ac-slime clojure-mode clojure-test-mode
+	       popup ac-slime clojure-mode clojure-test-mode
 	       clojurescript-mode undo-tree rainbow-delimiters
 	       volatile-highlights cljdoc))
 
@@ -40,8 +38,8 @@
 ;; shhht, give me some time to think, don't blink
 (blink-cursor-mode 0)
 
-;; config
-(setq initial-scratch-message nil) ;; No scratch message
+;; No scratch message
+(setq initial-scratch-message nil) 
 
 ;; show matching parens
 (show-paren-mode 1)
@@ -49,8 +47,10 @@
 ;; always show column numbers
 (column-number-mode 1)
 
-;; better navigation in 'switch-to-buffer' and 'find-file'
-(ido-mode 1)
+;; improved navigation in 'switch-to-buffer' and 'find-file'. Potential conflict with icicle (icy-mode)
+;; (setq ido-enable-flex-matching t)
+;; (setq ido-everywhere t)
+;; (ido-mode 1)
 
 ;; paredit
 (autoload 'paredit-mode "paredit"
@@ -63,7 +63,7 @@
 (add-hook 'scheme-mode-hook           'turn-on-paredit)
 
 (eval-after-load "paredit"
-  #'(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
+  '(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
 	
 ;; auto-complete
 (require 'auto-complete)
@@ -122,7 +122,7 @@
 (global-font-lock-mode 1) ;; Enable syntax highlighting when editing code.
 (setq current-language-environment "UTF-8")
 
-define-key emacs-lisp-mode-map
+(define-key emacs-lisp-mode-map
   (kbd "M-.") 'find-function-at-point)
 
 (custom-set-variables
@@ -130,7 +130,8 @@ define-key emacs-lisp-mode-map
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (deeper-blue))))
+ '(custom-enabled-themes (quote (deeper-blue)))
+ '(icicle-TAB-completion-methods (quote (fuzzy basic vanilla))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
