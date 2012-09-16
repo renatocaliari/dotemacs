@@ -1,21 +1,24 @@
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 (add-to-list 'package-archives 
 	     '("marmalade" .
 	       "http://marmalade-repo.org/packages/"))
-
-(setq url-http-attempt-keepalives nil)
-(setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
+(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
+;; (add-to-list 'package-archives
+;;             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 (setq package-list
       '(paredit popup pos-tip
-	       rainbow-mode escreen switch-window auto-complete fuzzy-match
-	       icicles magit magithub highlight-parentheses
-	       highlight-indentation smart-tab color-theme elein
-	       popup ac-slime clojure-mode clojure-test-mode
-	       clojurescript-mode undo-tree rainbow-delimiters
-	       volatile-highlights cljdoc))
+		markdown-mode
+		fill-column-indicator
+		rainbow-mode escreen switch-window auto-complete
+		flymake flymake-jslint 
+;;		icicles 
+		magit magithub highlight-parentheses
+		highlight-indentation smart-tab color-theme elein
+		popup ac-slime clojure-mode clojure-test-mode
+		clojurescript-mode undo-tree rainbow-delimiters
+		volatile-highlights cljdoc))
 
 ;; activate all the packages (in particular autoloads)
 (package-initialize)
@@ -28,7 +31,10 @@
 (dolist (package package-list)
   (when (not (package-installed-p package))
     (package-install package)))
-	
+
+(setq url-http-attempt-keepalives nil)
+(setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
+
 ;; Remove unused UI elements
 (tool-bar-mode 0)
 (menu-bar-mode 1)
@@ -37,6 +43,9 @@
 
 ;; shhht, give me some time to think, don't blink
 (blink-cursor-mode 0)
+
+(setq swank-clojure-classpath
+        (list "/Users/renatocaliari/Development/clojure/search"))
 
 ;; No scratch message
 (setq initial-scratch-message nil) 
@@ -47,10 +56,21 @@
 ;; always show column numbers
 (column-number-mode 1)
 
-;; improved navigation in 'switch-to-buffer' and 'find-file'. Potential conflict with icicle (icy-mode)
-;; (setq ido-enable-flex-matching t)
-;; (setq ido-everywhere t)
-;; (ido-mode 1)
+;; better navigation in 'switch-to-buffer' and 'find-file'
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+
+(setq fci-rule-width 1)
+(setq fci-rule-color "yellow")
+
+;; show column indicator
+(defun turn-on-fci-mode () (fci-mode 1))
+(add-hook 'clojure-mode-hook 'turn-on-fci-mode)
+(add-hook 'javascript-mode-hook 'turn-on-fci-mode)
+
+(add-hook 'clojure-mode-hook 'flymake-mode-on)
+(add-hook 'js-mode-hook 'flymake-jslint-load)
 
 ;; paredit
 (autoload 'paredit-mode "paredit"
@@ -64,6 +84,9 @@
 
 (eval-after-load "paredit"
   '(define-key paredit-mode-map (kbd "C-j") 'eval-last-sexp))
+
+;; show line number to all lines
+(global-linum-mode t)
 	
 ;; auto-complete
 (require 'auto-complete)
@@ -78,10 +101,11 @@
 (add-hook 'lisp-mode-hook 'turn-on-indent)
 (add-hook 'clojure-mode-hook 'turn-on-indent)
 
+(require 'undo-tree)
 (global-undo-tree-mode)
 
 ;; improved auto-complete for emacs commands
-(icicle-mode 1)
+;; (icicle-mode 1)
 
 ;; eldoc
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
@@ -116,6 +140,8 @@
   (error (condition-case nil
 	     (set-default-font "Monaco")
 	   (error nil))))
+
+
 
 (setq backup-directory-alist (list (cons ".*" (expand-file-name "~/.emacsbackup/"))))
 (setq x-select-enable-clipboard t)
