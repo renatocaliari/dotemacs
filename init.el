@@ -1,3 +1,4 @@
+(add-to-list 'load-path "~/.emacs.d/elpa")
 (require 'package)
 
 (add-to-list 'package-archives 
@@ -7,30 +8,52 @@
 ;; (add-to-list 'package-archives
 ;;             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(setq package-list
-      '(paredit popup pos-tip
-		markdown-mode
-		fill-column-indicator
-		rainbow-mode escreen switch-window auto-complete
-		flymake flymake-jslint 
-;;		icicles 
-		magit magithub highlight-parentheses
-		highlight-indentation smart-tab color-theme elein
-		popup ac-slime clojure-mode clojure-test-mode
-		clojurescript-mode undo-tree rainbow-delimiters
-		volatile-highlights cljdoc))
-
-;; activate all the packages (in particular autoloads)
 (package-initialize)
 
-;; fetch the list of packages available 
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; install the missing packages
-(dolist (package package-list)
-  (when (not (package-installed-p package))
-    (package-install package)))
+
+(defvar elpa-packages '(
+paredit popup pos-tip
+;;		icicles 
+		markdown-mode
+		fill-column-indicator
+		rainbow-mode 
+		escreen 
+		switch-window 
+		auto-complete
+		flymake 
+		flymake-jslint 
+		magit 
+		magithub
+		highlight-parentheses
+		highlight-indentation 
+		smart-tab 
+		color-theme 
+		elein
+		popup 
+		ac-slime
+		clojure-mode 
+		clojure-test-mode
+		clojurescript-mode 
+		undo-tree 
+		rainbow-delimiters
+		volatile-highlights
+		cljdoc))
+
+(dolist (p elpa-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+(defun initialize-packages ()
+  (require 'eldoc) ; if not already loaded
+  (require 'auto-complete)
+  (require 'cljdoc)
+  (require 'ido)
+  (require 'undo-tree))
+
+(initialize-packages)
 
 (setq url-http-attempt-keepalives nil)
 (setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
@@ -59,6 +82,9 @@
 ;; better navigation in 'switch-to-buffer' and 'find-file'
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
+(setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
+(setq ido-use-filename-at-point 'guess)
+(setq ido-show-dot-for-dired t)
 (ido-mode 1)
 
 (setq fci-rule-width 1)
@@ -89,19 +115,16 @@
 (global-linum-mode t)
 	
 ;; auto-complete
-(require 'auto-complete)
 (global-auto-complete-mode t)
 (setq ac-auto-start t)                  ;automatically start
 
 ;; cljdoc - 'eldoc' for clojure
-(require 'cljdoc)
 
 ;; auto indent
 (defun turn-on-indent () (local-set-key (kbd "RET") 'newline-and-indent))
 (add-hook 'lisp-mode-hook 'turn-on-indent)
 (add-hook 'clojure-mode-hook 'turn-on-indent)
 
-(require 'undo-tree)
 (global-undo-tree-mode)
 
 ;; improved auto-complete for emacs commands
@@ -113,7 +136,6 @@
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
-(require 'eldoc) ; if not already loaded
 (eldoc-add-command
  'paredit-backward-delete
  'paredit-close-round) 
@@ -141,9 +163,7 @@
 	     (set-default-font "Monaco")
 	   (error nil))))
 
-
-
-(setq backup-directory-alist (list (cons ".*" (expand-file-name "~/.emacsbackup/"))))
+(setq backup-directory-alist (list (cons ".*" (expand-file-name "~/.emacs.d/backup/"))))
 (setq x-select-enable-clipboard t)
 (global-font-lock-mode 1) ;; Enable syntax highlighting when editing code.
 (setq current-language-environment "UTF-8")
@@ -157,7 +177,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes (quote (deeper-blue)))
- '(icicle-TAB-completion-methods (quote (fuzzy basic vanilla))))
+;; '(icicle-TAB-completion-methods (quote (fuzzy basic vanilla))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
