@@ -1,5 +1,3 @@
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set the load path  
 ;; add everything under ~/.emacs.d to it
@@ -59,25 +57,13 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-(require 'eldoc)
-(require 'auto-complete)
-(require 'cljdoc)
-(require 'undo-tree)
+(require 'eldoc nil 'noerror)
+(require 'auto-complete nil 'noerror)
+(require 'cljdoc nil 'noerror)
+(require 'undo-tree nil 'noerror)
 
 (setq url-http-attempt-keepalives nil)
-(setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;stuff in separate files;; maybe use autoload?
-(require 'djcb-org nil 'noerror)
-(require 'djcb-erc nil 'noerror)
-(require 'djcb-wl nil 'noerror) ;; wl & bbdb ssetup
-(require 'djcb-funcs nil 'noerror) ;; load it it can be found...
-(require 'djcb-ibuffer nil 'noerror)
-(require 'djcb-menu nil 'noerror)
-(require 'djcb-prog nil 'noerror) ;; my programming / markup settngs
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; (setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; general settings
@@ -425,11 +411,6 @@ line instead."
 (global-set-key (kbd "<XF86Back>") 'winner-undo)
 (winner-mode t)
 
-(when (fboundp 'djcb-uber-tab) 
-  (when (fboundp 'yas/trigger-key)
-    (setq yas/trigger-key (kbd "C-<tab>")))
-  (global-set-key (kbd "<tab>") 'djcb-uber-tab)
-  (global-set-key (kbd "<C-S-iso-lefttab>") 'djcb-uber-tab))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
