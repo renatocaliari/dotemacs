@@ -1,12 +1,13 @@
 #dotemacs
 
-My .emacs.d/init.el with packages to use clojure, repl, auto-complete, documentation, etc.  
+My .emacs.d/init.el with packages to use javascript (jshint), clojure, repl, auto-complete, documentation, etc.  
 
 Steps:  
 1. Install Emacs 24 (if it not already installed) [[here]](http://batsov.com/articles/2011/10/09/getting-started-with-emacs-24/)  
 2. Copy init.el to your emacs path (e.g. ~/.emacs.d)  
 3. Install Swank Clojure. [[follow these steps]](https://github.com/technomancy/swank-clojure/#usage)  
-4. Open emacs and waiting the installation of all packages. [1]
+4. Install node and npmjs (it is needed to use flymake-jshint).
+5. Open emacs and waiting the installation of all packages. [1]
 
 [1]: If you get the following error:  
 ```
