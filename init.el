@@ -206,6 +206,7 @@ line instead."
 ;; hl-line: highlight the current line
 (when (fboundp 'global-hl-line-mode)
   (global-hl-line-mode t)) ;; turn it on for all modes by default
+(set-face-background hl-line-face "gray26")
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/ShowParenMode
 (when (fboundp 'show-paren-mode)
@@ -317,7 +318,8 @@ line instead."
   ido-use-url-at-point nil         ; don't use url at point (annoying)
   ido-enable-flex-matching nil     ; don't try to be too smart
   ido-max-prospects 8              ; don't spam my minibuffer
-  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
+  ido-confirm-unique-completion t  ; wait for RET, even with unique completion
+  ido-create-new-buffer 'always)   ; force create new buffer
 
 ;; when using ido, the confirmation is rather annoying...
  (setq confirm-nonexistent-file-or-buffer nil)
@@ -329,8 +331,6 @@ line instead."
       (make-local-variable 'resize-minibuffer-window-max-height)
       (setq resize-minibuffer-window-max-height 1))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippet mode
