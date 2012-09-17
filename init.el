@@ -68,6 +68,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; general settings
 ;;
+(global-undo-tree-mode)
+
 (menu-bar-mode  t)                       ;; show the menu...
 (mouse-avoidance-mode 'jump)             ;; mouse ptr when cursor is too close
 (tool-bar-mode -1)                       ;; turn-off toolbar 
