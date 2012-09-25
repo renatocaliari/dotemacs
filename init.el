@@ -1,11 +1,3 @@
-;; -*-mode: Emacs-Lisp; folding-mode:t-*-
-;; Copyright (C) 1996-2010  Dirk-Jan C. Binnema.
-;; URL: http://www.djcbsoftware.nl/dot-emacs.html
-;; This file is free software licensed under the terms of the
-;; GNU General Public License, version 3 or later.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set the load path  
 ;; add everything under ~/.emacs.d to it
@@ -22,9 +14,9 @@
 
 (require 'package)
 
-(setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-			 ("gnu" . "http://elpa.gnu.org/packages/")
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")
 			 ("tromey" . "http://tromey.com/elpa/")))
 
 (package-initialize)
@@ -44,7 +36,7 @@
 			switch-window 
 			auto-complete
 			flymake 
-			flymake-jslint 
+			flymake-jshint 
 			magit 
 			magithub
 			highlight-parentheses
@@ -60,41 +52,36 @@
 			undo-tree 
 			rainbow-delimiters
 			volatile-highlights
-			cljdoc))
+			cljdoc
+			multiple-cursors))	       
+
 
 (dolist (p elpa-packages)
   (when (not (package-installed-p p))
     (package-install p)))
 
-(require 'eldoc)
-(require 'auto-complete)
-(require 'cljdoc)
-(require 'undo-tree)
+(require 'eldoc nil 'noerror)
+(require 'auto-complete nil 'noerror)
+(require 'cljdoc nil 'noerror)
+(require 'undo-tree nil 'noerror)
 
 (setq url-http-attempt-keepalives nil)
-(setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;stuff in separate files;; maybe use autoload?
-(require 'djcb-org nil 'noerror)
-(require 'djcb-erc nil 'noerror)
-(require 'djcb-wl nil 'noerror) ;; wl & bbdb ssetup
-(require 'djcb-funcs nil 'noerror) ;; load it it can be found...
-(require 'djcb-ibuffer nil 'noerror)
-(require 'djcb-menu nil 'noerror)
-(require 'djcb-prog nil 'noerror) ;; my programming / markup settngs
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; (setq inferior-lisp-program "/Users/renatocaliari/.lein/lein repl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; general settings
 ;;
+(global-undo-tree-mode)
+
 (menu-bar-mode  t)                       ;; show the menu...
 (mouse-avoidance-mode 'jump)             ;; mouse ptr when cursor is too close
 (tool-bar-mode -1)                       ;; turn-off toolbar 
 
-(setq cua-enable-cua-keys nil)           ;; only for rectangles
+(setq cua-enable-cua-keys t)
 (cua-mode t)
+
+(setq x-select-enable-clipboard t)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)  
 
 (setq ;; scrolling
   scroll-margin 0                        ;; do smooth scrolling, ...
@@ -188,8 +175,8 @@ line instead."
 (if (require 'sml-modeline nil 'noerror)    ;; use sml-modeline if available
   (progn 
     (sml-modeline-mode 1)                   ;; show buffer pos in the mode line
-    (scroll-bar-mode -1))                   ;; turn off the scrollbar
-  (scroll-bar-mode 1)                       ;; otherwise, show a scrollbar...
+)                   ;; turn off the scrollbar
+  (scroll-bar-mode -1)                       ;; otherwise, show a scrollbar...
   (set-scroll-bar-mode 'right))             ;; ... on the right
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -227,6 +214,7 @@ line instead."
 ;; hl-line: highlight the current line
 (when (fboundp 'global-hl-line-mode)
   (global-hl-line-mode t)) ;; turn it on for all modes by default
+(set-face-background hl-line-face "gray26")
 
 ;; http://www.emacswiki.org/cgi-bin/wiki/ShowParenMode
 (when (fboundp 'show-paren-mode)
@@ -338,7 +326,8 @@ line instead."
   ido-use-url-at-point nil         ; don't use url at point (annoying)
   ido-enable-flex-matching nil     ; don't try to be too smart
   ido-max-prospects 8              ; don't spam my minibuffer
-  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
+  ido-confirm-unique-completion t  ; wait for RET, even with unique completion
+  ido-create-new-buffer 'always)   ; force create new buffer
 
 ;; when using ido, the confirmation is rather annoying...
  (setq confirm-nonexistent-file-or-buffer nil)
@@ -350,8 +339,6 @@ line instead."
       (make-local-variable 'resize-minibuffer-window-max-height)
       (setq resize-minibuffer-window-max-height 1))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; yasnippet mode
@@ -369,8 +356,28 @@ line instead."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global keybindings
-;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Multiple cursors. Source: https://github.com/magnars/multiple-cursors.el
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "RET")         'newline-and-indent)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; From active region to multiple cursors:
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
+;; Rectangular region mode
+(global-set-key (kbd "H-SPC") 'set-rectangular-region-anchor)
+;; Mark more like this
+(global-set-key (kbd "M-æ") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+
 (global-set-key (kbd "C-<f4>")      'kill-buffer-and-window)
 (global-set-key (kbd "<delete>")    'delete-char)  ; delete == delete    
 (global-set-key (kbd "M-g")         'goto-line)    ; M-g  'goto-line
@@ -418,10 +425,10 @@ line instead."
 ;; use super + arrow keys to switch between visible buffers
 (require 'windmove)
 (windmove-default-keybindings 'super) ;; will be overridden
-(global-set-key (kbd "<C-s-left>")  'windmove-left)
-(global-set-key (kbd "<C-s-right>") 'windmove-right)
-(global-set-key (kbd "<C-s-up>")    'windmove-up)
-(global-set-key (kbd "<C-s-down>")  'windmove-down)
+(global-set-key (kbd "<C-'-left>")  'windmove-left)
+(global-set-key (kbd "<C-'-right>") 'windmove-right)
+(global-set-key (kbd "<C-'-up>")    'windmove-up)
+(global-set-key (kbd "<C-'-down>")  'windmove-down)
 
 ;; restore window configuration
 (require 'winner)
@@ -432,11 +439,6 @@ line instead."
 (global-set-key (kbd "<XF86Back>") 'winner-undo)
 (winner-mode t)
 
-(when (fboundp 'djcb-uber-tab) 
-  (when (fboundp 'yas/trigger-key)
-    (setq yas/trigger-key (kbd "C-<tab>")))
-  (global-set-key (kbd "<tab>") 'djcb-uber-tab)
-  (global-set-key (kbd "<C-S-iso-lefttab>") 'djcb-uber-tab))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -452,15 +454,21 @@ line instead."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Javascript
+
+(require 'flymake-jshint)
+(add-hook 'javascript-mode-hook
+     (lambda () (flymake-mode t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure and Lisp
 
+;; nrepl
 ;; Enable eldoc in clojure buffers:
 (add-hook 'nrepl-interaction-mode-hook
   'nrepl-turn-on-eldoc-mode)
-
-;; Stop the error buffer from popping up while working in the REPL buffer:
+;; Stop the error buffer from popping up while working in the REPL buffer
 (setq nrepl-popup-stacktraces nil)
-
 ;; Make C-c C-z switch to the *nrepl* buffer in the current window:
 (add-to-list 'same-window-buffer-names "*nrepl*") 
 
