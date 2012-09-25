@@ -79,9 +79,10 @@
 
 (setq cua-enable-cua-keys t)
 (cua-mode t)
-
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)  
+;; shift + click select region
+(define-key global-map (kbd "<S-down-mouse-1>") 'ignore) ; turn off font dialog
+(define-key global-map (kbd "<S-mouse-1>") 'mouse-set-point)
+(put 'mouse-set-point 'CUA 'move)
 
 (setq ;; scrolling
   scroll-margin 0                        ;; do smooth scrolling, ...
@@ -93,9 +94,9 @@
 (setq fringe-mode '(1 . 0))              ;; emacs 22+
 (delete-selection-mode 1)                ;; delete the sel with a keyp
 
-;; (setq x-select-enable-clipboard t   ;; copy-paste should work ...
-;;       interprogram-paste-function   ;; ...with...
-;;       'x-cut-buffer-or-selection-value)	;; ...other X clients
+(setq x-select-enable-clipboard t   ;; copy-paste should work ...
+      interprogram-paste-function   ;; ...with...
+      'x-cut-buffer-or-selection-value)	;; ...other X clients
 
 (setq search-highlight t                 ;; highlight when searching... 
   query-replace-highlight t)             ;; ...and replacing
